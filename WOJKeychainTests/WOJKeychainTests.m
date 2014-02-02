@@ -6,29 +6,37 @@
 //  Copyright (c) 2014 Wojciech Jachowicz. All rights reserved.
 //
 
-#import <XCTest/XCTest.h>
+#import "WOJKeychain.h"
 
-@interface WOJKeychainTests : XCTestCase
+#import "Kiwi.h"
 
-@end
+SPEC_BEGIN(WOJKeychainTests)
 
-@implementation WOJKeychainTests
+describe(@"WOJKeychainTests", ^{
+    NSString *key = @"key";
+    context(@"saving and loading NSString", ^{
+        it(@"should save and load NSString object ", ^{
+            NSString *secureObject = @"value";
+            BOOL result = [WOJKeychain saveSecureObject:secureObject forKey:key];
+            NSString *loadedObject = [WOJKeychain loadSecureObjectForKey:key];
+            [[theValue(result) should] beTrue];
+            [[loadedObject should] equal:secureObject];
+        });
+        it(@"should save and load NSNumber object ", ^{
+            NSNumber *secureObject = @10;
+            BOOL result = [WOJKeychain saveSecureObject:secureObject forKey:key];
+            NSString *loadedObject = [WOJKeychain loadSecureObjectForKey:key];
+            [[theValue(result) should] beTrue];
+            [[loadedObject should] equal:secureObject];
+        });
+        it(@"should save and load NSArray object ", ^{
+            NSArray *secureObject = @[@10,@11];
+            BOOL result = [WOJKeychain saveSecureObject:secureObject forKey:key];
+            NSString *loadedObject = [WOJKeychain loadSecureObjectForKey:key];
+            [[theValue(result) should] beTrue];
+            [[loadedObject should] equal:secureObject];
+        });
+    });
+});
 
-- (void)setUp
-{
-    [super setUp];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
-}
-
-- (void)tearDown
-{
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
-    [super tearDown];
-}
-
-- (void)testExample
-{
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
-}
-
-@end
+SPEC_END

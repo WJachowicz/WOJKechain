@@ -1,3 +1,5 @@
 platform :ios, '5.0'
 
-pod 'Kiwi'
+target :WOJKeychainTests, :exclusive => true do
+    pod 'Kiwi'
+end
