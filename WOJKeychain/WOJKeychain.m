@@ -29,6 +29,7 @@
     
     NSData *valueData = [NSKeyedArchiver archivedDataWithRootObject:object];
     NSMutableDictionary * secureQuery = [self secureQueryForKey:key];
+    [self deleteSecureObjectForKey:key];
     [secureQuery setObject:valueData forKey:(__bridge id)kSecValueData];
     
     CFTypeRef result = NULL;
@@ -50,19 +51,21 @@
     OSStatus status = SecItemCopyMatching((__bridge CFDictionaryRef)secureQuery, (CFTypeRef *)&cfData);
     if (status == errSecSuccess) {
         id secureObject = [NSKeyedUnarchiver unarchiveObjectWithData:(__bridge_transfer NSData *)cfData];
-        CFRelease(cfData);
         return secureObject;
     } else{
-        if (cfData) {
-            CFRelease(cfData);
-        }
         return nil;
     }
 }
 
 + (BOOL)deleteSecureObjectForKey:(NSString *)key
 {
-    return NO;
+    NSMutableDictionary *secureQuery = [self secureQueryForKey:key];
+    OSStatus status = SecItemDelete((__bridge CFDictionaryRef)secureQuery);
+    if (status == errSecSuccess) {
+        return YES;
+    } else{
+        return NO;
+    }
 }
 
 #pragma mark - private
